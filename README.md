@@ -1,6 +1,6 @@
 # deweb
 
-> You had your change, you wasted it, and now I have to do it on my own.
+> You had your chance, you wasted it, and now I have to do it on my own.
 
 # What is deweb
 

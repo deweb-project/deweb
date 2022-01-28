@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="./img/brand.png">
+    <link rel="stylesheet" href="./mvp.css">
+
+    <meta charset="utf-8">
+    <meta name="description" content="MVP.css - No classes, no framework. Just semantic HTML and you're done.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>deweb</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li>Home</li>
+                <li><a href="/chats.html">Chats</a></li>
+            </ul>
+        </nav>
+        <h1>deweb</h1>
+        <p>It wasn't broken. You broke it.</p>
+        <br>
+        <p>Your ID: <code id="userid">Generating...</code></p>
+        <script>
+        getSelfID().then((v) => {
+            document.getElementById("userid").innerText = v.ID
+        })
+        </script>
+    </header>
+    <main>
+        <hr>
+        <section>
+            <header>
+                <h2>Status or something<h2>
+                <p>In future ofc.</p>
+            </header>
+        </section>
+    </main>
+</body>
+</html>

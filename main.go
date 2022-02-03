@@ -7,6 +7,7 @@ import (
 	"x.x/x/deweb/frontend"
 	"x.x/x/deweb/gui"
 	"x.x/x/deweb/justdb"
+	"x.x/x/deweb/lib"
 )
 
 func main() {
@@ -15,6 +16,7 @@ func main() {
 	} else {
 		justdb.Setup("")
 	}
+	lib.LoadQueue()
 	crypt.LoadSelfKey()
 	go frontend.Load()
 	gui.Load()

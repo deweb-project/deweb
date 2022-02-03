@@ -11,9 +11,9 @@ import (
 // This TransportStruct
 type TransportStruct struct {
 	ID          []byte // Nonce but []byte, for JustDB
+	Nonce       string // Random String ~
 	Source      string // GetSelfID().ID
 	Destination string // GetSelfID().ID
-	Nonce       string // Random String ~
 	Method      string // For example v1/0/ping
 	// Where v1 is major version - bump when breaking change occured
 	// 0 is a minor version.
@@ -23,6 +23,7 @@ type TransportStruct struct {
 	DataBytes []byte `json:",omitempty"`
 	PublicKey string `json:",omitempty"`
 	Signature string // GenerateSignatureString(.this)
+	Tries     int    // How many times the event tried to be delivered.
 }
 
 func (ts *TransportStruct) OUTAttachPublicKey() {

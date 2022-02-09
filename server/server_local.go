@@ -3,13 +3,24 @@ package server
 import (
 	"log"
 	"net"
+	"strconv"
+
+	"x.x/x/deweb/crypt"
+	"x.x/x/deweb/lib"
+	"x.x/x/deweb/transport"
 )
 
-func NewServerLocal() Server {
+func NewServerLocal(port int) Server {
+	deidstring := "local:127.0.0.1:" + strconv.Itoa(port) + "[key=" + crypt.GetKey().GetFingerprint() + "]"
+	deid, err := lib.ParseDEID(deidstring)
+	if err != nil {
+		panic(err)
+	}
 	return Server{
+		DEID: deid,
 		Start: func() error {
-			log.Println("Listening on port :51337")
-			l, err := net.Listen("tcp", ":51337")
+			log.Println("Listening on port :" + strconv.Itoa(port))
+			l, err := net.Listen("tcp", ":"+strconv.Itoa(port))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -19,7 +30,7 @@ func NewServerLocal() Server {
 					log.Println(err)
 					continue
 				}
-				go handleconn(conn)
+				go transport.Handleconn(conn, false)
 			}
 		},
 	}

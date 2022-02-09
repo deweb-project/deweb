@@ -18,12 +18,12 @@ type SelfKeyStore struct {
 
 var Key *crypto.Key
 
-func KeyUnlockDefault() {
-	var err error
-	Key, err = Key.Unlock([]byte{})
+func GetKey() *crypto.Key {
+	Key, err := Key.Unlock([]byte{})
 	if err != nil {
 		panic(err)
 	}
+	return Key
 }
 
 var SelfKey = SelfKeyStore{
@@ -42,6 +42,7 @@ func LoadSelfKey() {
 		if err != nil {
 			panic(err)
 		}
+		//KeyUnlockDefault()
 		return
 	}
 	SelfKey.Seed = "not implemented"
@@ -58,6 +59,7 @@ func LoadSelfKey() {
 	}
 	justdb.Write(&SelfKey)
 	print("OK\n")
+	//KeyUnlockDefault()
 	//print("\n\nyour seed: '" + SelfKey.Seed + "'\n\n")
 	//print(SelfKey.Key.CanEncrypt(), "\n")
 }

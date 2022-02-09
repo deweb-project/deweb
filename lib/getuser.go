@@ -11,27 +11,34 @@ import (
 )
 
 type UserConnectionStatus struct {
+	ID               []byte
 	CanConnect       bool // do we know how?
 	LastSeen         int
 	AlreadyConnected bool
 }
 type UserInfo struct {
 	ID           []byte // string(deid)
-	ConnectionID int
-	Connection   UserConnectionStatus
-	DEIDID       int
-	DEID         DEID
+	ConnectionID []byte
+	Connection   UserConnectionStatus `gorm:"foreignKey:ConnectionID;references:ID"`
+	DEIDID       []byte
+	DEID         DEID `gorm:"foreignKey:DEIDID;references:ID"`
 }
 
 type DEID struct {
+	ID         []byte
 	Protocol   string
 	Identifier string
 	Key        string
-	Extra      map[string]string
+	Extra      justdb.MapStringString `gorm:"type:text"`
+}
+
+func (d DEID) String() string {
+	return d.Protocol + ":" + d.Identifier + "[key=" + d.Key + "]"
 }
 
 var ParseDEIDIncorrectAddress = "parsedeid: incorrect address given"
 
+// Check GetUser
 func ParseDEID(deid string) (DEID, error) {
 	deid_split := strings.SplitN(deid, ":", 2)
 	log.Println(deid_split)
@@ -81,13 +88,12 @@ type GetUserResp struct {
 }
 
 func GetUser(deid string) GetUserResp {
-
 	// id format:
 	// proto:identifier[key=asdasdasdasdasdasdasd]
 	// Example:
-	// libp2p:/ip4/7.7.7.7/tcp/4242/p2p/QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N[key=???]
+	// libp2p:/ip4/7.7.7.7:1242/tcp/4242/p2p/QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N[key=???]
 	// tor:asdasd.onion[key=???]
-	// proxied:/ip4/10.8.42.42/tcp/4242/p2p/QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N[key=???&via=tor:asdasd.onion[key=???]]
+	// proxied:/ip4/10.8.42.42:1231/tcp/4242/p2p/QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N[key=???&via=tor:asdasd.onion[key=???]]
 	// Keep in mind that deweb assumes plaintext connection and encrypts all data anyway.
 	//So even if we connect over encrypted tunel using libp2p/tor/i2p data is still being
 	//encrypted and decrypted by the deweb daemon, just as the connection was plaintext.

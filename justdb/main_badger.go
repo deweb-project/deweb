@@ -1,3 +1,6 @@
+//go:build badger
+// +build badger
+
 package justdb
 
 import (

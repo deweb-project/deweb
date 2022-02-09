@@ -1,14 +1,14 @@
 package lib
 
 import (
-	"math/rand"
+	"strings"
 
 	"x.x/x/deweb/justdb"
 )
 
 type QueueStore struct {
 	ID    []byte
-	Tasks map[string][]string
+	Tasks justdb.MultiString `gorm:"type:text"`
 }
 
 var Queue = QueueStore{
@@ -21,32 +21,39 @@ func LoadQueue() {
 
 func QueueTask(x TransportStruct) {
 	justdb.Write(&x)
-	Queue.Tasks[x.Destination] = append(Queue.Tasks[x.Destination], string(x.ID))
+	Queue.Tasks = append(Queue.Tasks, string(x.Destination)+"|||"+string(x.ID))
 	justdb.Write(&Queue)
 }
 
 func GetTask(deid string) (x TransportStruct) {
-	id := Queue.Tasks[deid][rand.Intn(len(Queue.Tasks[deid]))]
-	x.ID = []byte(id)
-	justdb.Read(&x)
-	x.Tries++
-	justdb.Write(&x)
-	return
+	for _, v := range Queue.Tasks {
+		s := strings.Split(v, "|||")
+		if s[0] == deid {
+			id := s[1]
+			x.ID = []byte(id)
+			justdb.Read(&x)
+			x.Tries++
+			justdb.Write(&x)
+			return
+		}
+	}
+	return x
 }
 
 func RemoveTask(deid string, uuid string) {
 	id := -1
-	for i, v := range Queue.Tasks[deid] {
-		if v == uuid {
+
+	for i, v := range Queue.Tasks {
+		s := strings.Split(v, "|||")
+		if s[0] == deid && s[1] == uuid {
 			id = i
 			break
 		}
-
 	}
 	if id == -1 {
 		return
 	}
-	Queue.Tasks[deid] = removeString(Queue.Tasks[deid], id)
+	Queue.Tasks = removeString(Queue.Tasks, id)
 	var x TransportStruct
 	x.ID = []byte(uuid)
 	justdb.Read(&x)

@@ -41,12 +41,12 @@ func TestTransportEncryptionCorrect(t *testing.T) {
 		nonce := uuid.New().String()
 		key_receiver := generateKey()
 		crypt.Key = key_receiver
-		crypt.KeyUnlockDefault()
+		//crypt.KeyUnlockDefault()
 		deid_receiver := lib.GetSelfID().ID
 
 		key_sender := generateKey()
 		crypt.Key = key_sender
-		crypt.KeyUnlockDefault()
+		//crypt.KeyUnlockDefault()
 		deid_sender := lib.GetSelfID().ID
 
 		var message = lib.TransportStruct{
@@ -63,7 +63,7 @@ func TestTransportEncryptionCorrect(t *testing.T) {
 		// message signed. Now let's verify it.
 		key_receiver = generateKey()
 		crypt.Key = key_receiver
-		crypt.KeyUnlockDefault()
+		//crypt.KeyUnlockDefault()
 		ok := message.INVerifyMessage()
 		if ok != true {
 			t.Error("message.INVerifyMessage(): failed")
@@ -74,16 +74,16 @@ func TestTransportEncryptionCorrect(t *testing.T) {
 
 func TestTransportEncryptionIncorrect(t *testing.T) {
 	// Incorrect - things changed
-	for i := 0; i < 75; i++ {
+	for i := 0; i < 1; i++ {
 		nonce := uuid.New().String()
 		key_receiver := generateKey()
 		crypt.Key = key_receiver
-		crypt.KeyUnlockDefault()
+		//crypt.KeyUnlockDefault()
 		deid_receiver := lib.GetSelfID().ID
 
 		key_sender := generateKey()
 		crypt.Key = key_sender
-		crypt.KeyUnlockDefault()
+		//crypt.KeyUnlockDefault()
 		deid_sender := lib.GetSelfID().ID
 
 		var message = lib.TransportStruct{
@@ -119,7 +119,7 @@ func TestTransportEncryptionIncorrect(t *testing.T) {
 		}
 		key_receiver = generateKey()
 		crypt.Key = key_receiver
-		crypt.KeyUnlockDefault()
+		//crypt.KeyUnlockDefault()
 		ok := message.INVerifyMessage()
 		if ok == true {
 			t.Error("message.INVerifyMessage(): true - but content changed!")

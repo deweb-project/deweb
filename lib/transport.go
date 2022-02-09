@@ -1,8 +1,10 @@
 package lib
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"x.x/x/deweb/crypt"
@@ -21,9 +23,14 @@ type TransportStruct struct {
 	// v1/0/chat-messages-send
 	Data      string `json:",omitempty"`
 	DataBytes []byte `json:",omitempty"`
-	PublicKey string `json:",omitempty"`
+	PublicKey string `json:",omitempty"` // outcoming pubkey.
 	Signature string // GenerateSignatureString(.this)
 	Tries     int    // How many times the event tried to be delivered.
+}
+
+func (ts *TransportStruct) String() string {
+	b, _ := json.Marshal(ts)
+	return string(b)
 }
 
 func (ts *TransportStruct) OUTAttachPublicKey() {
@@ -31,14 +38,14 @@ func (ts *TransportStruct) OUTAttachPublicKey() {
 		return
 	}
 	var err error
-	ts.PublicKey, err = crypt.Key.GetArmoredPublicKey()
+	ts.PublicKey, err = crypt.GetKey().GetArmoredPublicKey()
 	if err != nil {
 		panic(err)
 	}
 }
 
 func (ts *TransportStruct) OUTAttachSignature() {
-	keyring, err := crypto.NewKeyRing(crypt.Key)
+	keyring, err := crypto.NewKeyRing(crypt.GetKey())
 	if err != nil {
 		panic(err)
 	}
@@ -85,10 +92,17 @@ DataBytes: %x`, ts.ID, ts.Source, ts.Destination, ts.Nonce, ts.Method, ts.Data, 
 
 // true - message ok
 func (ts *TransportStruct) INVerifyMessage() bool {
+	//TODO: disable this, full trust.
+	//return true
+	proto := strings.Split(ts.Source, ":")[0]
+	if proto == "local" || proto == "dummyproto" {
+		return true
+	}
+	log.Println(ts.Source)
 	msg := crypto.NewPlainMessageFromString(ts.GenerateSignatureString())
 	signature, err := crypto.NewPGPSignatureFromArmored(ts.Signature)
 	if err != nil {
-		log.Println(err)
+		log.Println(err, ts.Signature)
 		return false
 	}
 	pubkey, err := crypto.NewKeyFromArmored(ts.PublicKey)

@@ -2,6 +2,7 @@ package crypt
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/ProtonMail/gopenpgp/v2/helper"
 )
@@ -32,5 +33,10 @@ func Decrypt(encrypted []byte, x interface{}) error {
 	if err != nil {
 		return err
 	}
+	log.Println("Decrypt:", string(rawjson))
 	return nil
+}
+
+func init() {
+	log.SetFlags(log.Lshortfile)
 }

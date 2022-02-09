@@ -17,6 +17,12 @@ func TestParseDEID(t *testing.T) {
 		Key:        "asdasdasdasdasdasdasd",
 		Extra:      map[string]string{},
 	}
+	TestParseDEIDCases["local:127.0.0.1:50002[key=57d4b6f76575ddc19e97427299884164e76335a0]"] = lib.DEID{
+		Protocol:   "local",
+		Identifier: "127.0.0.1:50002",
+		Key:        "57d4b6f76575ddc19e97427299884164e76335a0",
+		Extra:      map[string]string{},
+	}
 	for deid, correct := range TestParseDEIDCases {
 		result, err := lib.ParseDEID(deid)
 		if err != nil {

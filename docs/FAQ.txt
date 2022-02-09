@@ -1,0 +1,2 @@
+Q: why `x.x/x`
+A: I still have not decided project's main repo.

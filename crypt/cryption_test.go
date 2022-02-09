@@ -31,7 +31,7 @@ func RandomString(n int) string {
 	return string(s)
 }
 func TestEncryptDecrypt(t *testing.T) {
-	for v := int64(1); v < 100; v++ {
+	for v := int64(1); v < 1; v++ {
 		rand.Seed(time.Now().UnixNano() / v)
 		plain := TestInterface{
 			String: RandomString(1024 * int(v)),

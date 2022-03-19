@@ -30,7 +30,7 @@ var SelfKey = SelfKeyStore{
 	ID: []byte("selfkey"),
 }
 
-var rsaBits = 2048
+var rsaBits = 4096
 
 func LoadSelfKey() {
 	justdb.Read(&SelfKey)

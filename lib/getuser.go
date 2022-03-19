@@ -41,8 +41,8 @@ var ParseDEIDIncorrectAddress = "parsedeid: incorrect address given"
 // Check GetUser
 func ParseDEID(deid string) (DEID, error) {
 	deid_split := strings.SplitN(deid, ":", 2)
-	log.Println(deid_split)
 	if len(deid_split) != 2 {
+		log.Println(deid_split)
 		print("1. len(deid_split) != 2\n")
 		return DEID{}, errors.New(ParseDEIDIncorrectAddress)
 	}

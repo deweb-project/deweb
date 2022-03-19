@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
+	"github.com/google/uuid"
 	"x.x/x/deweb/crypt"
 )
 
@@ -26,6 +27,12 @@ type TransportStruct struct {
 	PublicKey string `json:",omitempty"` // outcoming pubkey.
 	Signature string // GenerateSignatureString(.this)
 	Tries     int    // How many times the event tried to be delivered.
+}
+
+func (ts *TransportStruct) OUTInitNonce() {
+	nonce := uuid.New().String()
+	ts.ID = []byte(nonce)
+	ts.Nonce = nonce
 }
 
 func (ts *TransportStruct) String() string {
@@ -98,7 +105,7 @@ func (ts *TransportStruct) INVerifyMessage() bool {
 	if proto == "local" || proto == "dummyproto" {
 		return true
 	}
-	log.Println(ts.Source)
+	//log.Println(ts.Source)
 	msg := crypto.NewPlainMessageFromString(ts.GenerateSignatureString())
 	signature, err := crypto.NewPGPSignatureFromArmored(ts.Signature)
 	if err != nil {

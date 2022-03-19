@@ -20,6 +20,9 @@ func LoadQueue() {
 }
 
 func QueueTask(x TransportStruct) {
+	x.OUTInitNonce()
+	x.OUTAttachPublicKey()
+	x.OUTAttachSignature()
 	justdb.Write(&x)
 	Queue.Tasks = append(Queue.Tasks, string(x.Destination)+"|||"+string(x.ID))
 	justdb.Write(&Queue)

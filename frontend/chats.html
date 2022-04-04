@@ -19,15 +19,6 @@
                 <li>Chats</li>
             </ul>
         </nav>
-        <h1>deweb</h1>
-        <p>It wasn't broken. You broke it.</p>
-        <br>
-        <p>Your ID: <code id="userid">Generating...</code></p>
-        <script>
-        //getActiveChats().then((v) => {
-        //    document.getElementById("userid").innerText = v.ID
-        //})
-        </script>
     </header>
     <main>
         <hr>
@@ -35,7 +26,7 @@
             <header>
                 <h2>Chat with user<h2>
                 <form>
-                    <input type="text" name="userid" placeholder="Who do you want to talk to?">
+                    <input type="text" id="userid" placeholder="Who do you want to talk to?">
                     <button type="submit" onclick="wrapper_openChat(); return false;">Submit</button>
                 </form>
             </header>

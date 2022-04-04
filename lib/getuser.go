@@ -111,15 +111,19 @@ func GetUser(deid string) GetUserResp {
 	}
 	return GetUserResp{
 		OK:       err == nil,
-		Error:    MyError{err},
+		Error:    MyError{Err:err},
 		UserInfo: user,
 	}
 }
 
 type MyError struct {
-	error
+	Err error
 }
 
 func (me MyError) MarshalJSON() ([]byte, error) {
-	return json.Marshal(me.Error())
+	log.Println(me)
+	if me.Err == nil {
+		return []byte("{}"), nil
+	}
+	return json.Marshal(me.Err.Error())
 }

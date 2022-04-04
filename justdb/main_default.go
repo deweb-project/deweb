@@ -7,52 +7,69 @@ import (
 	"crypto/sha1"
 	"database/sql/driver"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"log"
 	"os"
 	"reflect"
-	"strings"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
+
+type MultiMultiByte [][]byte
+
+func (s *MultiMultiByte) Scan(src interface{}) error {
+	str, ok := src.([]byte)
+	if !ok {
+		log.Fatal("Failed to parse MultiMultiByte")
+	}
+	err := json.Unmarshal(str, s)
+	if err != nil {
+		log.Fatal("Failed to umarshal")
+	}
+	return nil
+}
+
+func (s MultiMultiByte) Value() (driver.Value, error) {
+	return json.Marshal(s)
+}
 
 var DB *gorm.DB
 
 type MultiString []string
 
 func (s *MultiString) Scan(src interface{}) error {
-	str, ok := src.(string)
+	str, ok := src.([]byte)
 	if !ok {
-		return errors.New("failed to scan multistring field - source is not a string")
+		log.Fatal("Failed to parse MultiMultiByte")
 	}
-	*s = strings.Split(str, ",")
+	err := json.Unmarshal(str, s)
+	if err != nil {
+		log.Fatal("Failed to umarshal")
+	}
 	return nil
 }
 
 func (s MultiString) Value() (driver.Value, error) {
-	if s == nil || len(s) == 0 {
-		return nil, nil
-	}
-	return strings.Join(s, ","), nil
+	return json.Marshal(s)
 }
 
 type MapStringString map[string]string
 
 func (s *MapStringString) Scan(src interface{}) error {
-	str, ok := src.(string)
+	str, ok := src.([]byte)
 	if !ok {
-		return errors.New("failed to scan multistring field - source is not a string")
+		log.Fatal("Failed to parse MultiMultiByte")
 	}
-	return json.Unmarshal([]byte(str), s)
+	err := json.Unmarshal(str, s)
+	if err != nil {
+		log.Fatal("Failed to umarshal")
+	}
+	return nil
 }
 
 func (s MapStringString) Value() (driver.Value, error) {
-	if s == nil || len(s) == 0 {
-		return nil, nil
-	}
-	b, err := json.Marshal(s)
-	return string(b), err
+	return json.Marshal(s)
 }
 
 func Setup(path string) {
@@ -109,6 +126,7 @@ func Read(data interface{}) error {
 var inited = make(map[string]bool)
 
 func ivar(data interface{}) {
+	fmt.Printf("%T\n", data)
 	datatype := string(Hash([]byte(fmt.Sprintf("%T", data)))[0:8])
 	if inited[datatype] {
 		return

@@ -76,6 +76,10 @@ func Handleconn(conn net.Conn, readreply bool) {
 		methods.HandlePingV1(response)
 	case "v1/0/message":
 		methods.HandleMessageV1(response)
+	case "v1/0/chat-invite":
+		methods.HandleChatInviteV1(response)
+	case "v1/0/chat-invite-accept":
+		log.Println(response, "TODO")
 	default:
 		log.Println(response.Method + " is not supported\n")
 	}

@@ -14,11 +14,11 @@ import (
 )
 
 type Conversation struct {
-	ID           []byte   // Random ID (32 chars) + | + self.deid
-	Host         string   // self.deid
-	DEID         []string // members
-	RoomName     string   // Whatever
-	MessageIndex int      // Internal use
+	ID           []byte             // Random ID (32 chars) + | + self.deid
+	Host         string             // self.deid
+	DEID         justdb.MultiString // members
+	RoomName     string             // Whatever
+	MessageIndex int                // Internal use
 }
 type Message struct {
 	ID          []byte // Conversation.ID + Incremental ID
@@ -31,7 +31,7 @@ type Message struct {
 
 type ConversationList struct {
 	ID             []byte
-	ConversationID [][]byte
+	ConversationID justdb.MultiMultiByte
 }
 
 // target - Conversation.ID

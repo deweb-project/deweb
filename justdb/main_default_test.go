@@ -22,8 +22,10 @@ type TypeCommon struct {
 }
 
 type TypeSString struct {
-	ID      []byte
-	SString justdb.MultiString `gorm:"type:text"`
+	ID       []byte
+	SString  justdb.MultiString
+	MMByte   justdb.MultiMultiByte
+	MSString justdb.MapStringString
 }
 
 func TestTypes(t *testing.T) {
